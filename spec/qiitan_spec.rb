@@ -18,5 +18,14 @@ describe Qiitan do
 				end
 			end
 		end
+
+		describe '#get_users_info' do
+			context 'ユーザー名を指定すると' do
+				it 'ユーザー情報をハッシュで返す' do
+					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: 'trytersorandate'})
+					expect(@qiitan_client.get_users_info('u-akihiro')).to be_an_instance_of Hash
+				end
+			end
+		end
 	end
 end

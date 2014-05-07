@@ -55,7 +55,13 @@ module Qiitan
 		end
 
 		def get_user_info
-			@rest.get(API_BASE_URL + 'user', {'token' => @token })
+			url = API_BASE_URL + 'user'
+			hashed = @rest.get(url, true, {'token' => @token })
+		end
+
+		def get_users_info(url_name)
+			url = API_BASE_URL + 'users/' + url_name
+			hashed = @rest.get(url, true, {'token' => @token})
 		end
 	end
 end
