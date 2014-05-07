@@ -50,7 +50,7 @@ module Qiitan
 	class Client
 		def initialize(options)
 			@rest = Qiitan::Rest.new
-			hashed = @rest.post 'https://qiita.com/api/v1/auth', true, options
+			hashed = @rest.post API_BASE_URL + 'auth', true, options
 			@token = hashed['token']
 		end
 
