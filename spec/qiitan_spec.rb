@@ -22,12 +22,15 @@ describe Qiitan do
 	#		end
 	#	end
 	#end
+	before do
+		@password = 'eeduNbKq6LUx'
+	end
 
 	describe Qiitan::Client do
 		describe '#initialize' do
 			context 'トークンの取得に成功した場合' do
 				it 'Qiitan::Clientのインスタンスを取得する' do
-					expect(Qiitan::Client.new({url_name: 'u-akihiro', password: 'zeekerogycdrtb'})).to be_an_instance_of Qiitan::Client
+					expect(Qiitan::Client.new({url_name: 'u-akihiro', password: @password})).to be_an_instance_of Qiitan::Client
 				end
 			end
 
@@ -43,7 +46,7 @@ describe Qiitan do
 		describe '#get_user_info' do
 			context 'ログインしているユーザーの情報を返す' do
 				it '結果をハッシュで返す' do
-					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: 'zeekerogycdrtb'})
+					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: @password})
 					expect(@qiitan_client.get_user_info).to be_an_instance_of Hash
 				end
 			end
@@ -52,7 +55,7 @@ describe Qiitan do
 		describe '#get_users_info' do
 			context 'ユーザー名を指定すると' do
 				it 'ユーザー情報をハッシュで返す' do
-					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: 'zeekerogycdrtb'})
+					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: @password})
 					expect(@qiitan_client.get_users_info('u-akihiro')).to be_an_instance_of Hash
 				end
 			end
@@ -61,7 +64,7 @@ describe Qiitan do
 		describe '#posted_by' do
 			context '特定のユーザー名を指定すると' do
 				it '指定したユーザーの投稿を取得出来る' do
-					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: 'zeekerogycdrtb'})
+					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: @password})
 					expect(@qiitan_client.posted_by('luckypool')).to be_an_instance_of Array
 				end
 			end
@@ -70,7 +73,7 @@ describe Qiitan do
 		describe '#stocked_by' do
 			context '特定のユーザーを指定すると' do
 				it '指定したユーザーがストックした投稿を取得出来る' do
-					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: 'zeekerogycdrtb'})
+					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: @password})
 					expect(@qiitan_client.stocked_by('u-akihiro')).to be_instance_of Array
 				end
 			end
@@ -79,7 +82,7 @@ describe Qiitan do
 		describe '#rate_limit' do
 			context 'tokenを指定してrate_limitを実行すると' do
 				it 'APIのリミットをハッシュで取得出来る' do
-					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: 'zeekerogycdrtb'})
+					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: @password})
 					expect(@qiitan_client.rate_limit).to be_instance_of Hash
 				end
 			end
@@ -97,7 +100,7 @@ describe Qiitan do
 						body: 'posted by Qiitan. Hahaha.',
 						private: false,
 					}
-					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: 'zeekerogycdrtb'})
+					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: @password})
 					expect(@qiitan_client.post(item)).to be_instance_of Hash
 				end
 			end
