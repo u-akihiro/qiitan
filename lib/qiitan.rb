@@ -31,15 +31,26 @@ module Qiitan
 			hashed = JSON.parse(res.body)
 		end
 
-		def post(url, use_ssl, form_data, params = {})
-			url = assemble_params url, params if !params.empty? 
+		def post(p = {})
+			rp = {
+				url: nil,
+				url_params: nil,
+				form_data: nil,
+				payload: nil,
+				use_ssl: false
+			}
 
-			uri = URI.parse url
+			rp = rp.merge p
+
+			rp[:url] = assemble_params rp[:url], rp[:url_params] if !rp[:url_params].nil?
+
+			uri = URI.parse rp[:url]
 			req = Net::HTTP::Post.new uri.request_uri
 			#set_form_dataはバイナリファイルのアップロードは対応していないみたい
-			req.set_form_data form_data
+			req.set_form_data rp[:form_data] if !rp[:form_data].nil?
+			req.body = rp[:payload] if !rp[:payload].nil?
 			http = Net::HTTP.new uri.host, uri.port
-			http.use_ssl = use_ssl
+			http.use_ssl = rp[:use_ssl]
 			res = http.request req
 
 			hashed = JSON.parse res.body
@@ -67,7 +78,14 @@ module Qiitan
 	class Client
 		def initialize(options)
 			@rest = Qiitan::Rest.new
-			hashed = @rest.post API_BASE_URL + 'auth', true, options
+			#hashed = @rest.post API_BASE_URL + 'auth', true, options
+
+			hashed = @rest.post({
+				url: API_BASE_URL + 'auth',
+				form_data: options,
+				use_ssl: true
+			})
+
 			raise 'auth error. check youre username and password' if hashed.key? 'error'
 			@token = hashed['token']
 		end
@@ -99,9 +117,15 @@ module Qiitan
 		end
 
 		def post(item)
-			item = JSON.generate(item)
-			url = API_BASE_URL + "items/"
-			hashed = @rest.post(url, true, item, {'token' => @token})
+			#item = JSON.generate(item)
+			#url = API_BASE_URL + "items/"
+
+			hashed = @rest.post({
+				url: API_BASE_URL + "items/",
+				url_params: {'token' => @token},
+				payload: JSON.generate(item),
+				use_ssl: true
+			})
 		end
 	end
 end

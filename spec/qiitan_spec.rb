@@ -23,7 +23,7 @@ describe Qiitan do
 	#	end
 	#end
 	before do
-		@password = 'eeduNbKq6LUx'
+		@password = 'atraptilandroin'
 	end
 
 	describe Qiitan::Client do
@@ -70,14 +70,14 @@ describe Qiitan do
 			end
 		end
 
-		describe '#stocked_by' do
-			context '特定のユーザーを指定すると' do
-				it '指定したユーザーがストックした投稿を取得出来る' do
-					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: @password})
-					expect(@qiitan_client.stocked_by('u-akihiro')).to be_instance_of Array
-				end
-			end
-		end
+		#describe '#stocked_by' do
+		#	context '特定のユーザーを指定すると' do
+		#		it '指定したユーザーがストックした投稿を取得出来る' do
+		#			@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: @password})
+		#			expect(@qiitan_client.stocked_by('u-akihiro')).to be_instance_of Array
+		#		end
+		#	end
+		#end
 
 		describe '#rate_limit' do
 			context 'tokenを指定してrate_limitを実行すると' do
@@ -92,16 +92,17 @@ describe Qiitan do
 			context '指定した構造のハッシュを与えると' do
 				it 'Qiitaに記事をポストする' do
 					item = {
-						title: 'posted by Qiitan',
-						tags: [
-							{name: 'hello'},
-							{name: 'world'}
-						],
-						body: 'posted by Qiitan. Hahaha.',
-						private: false,
+						title: "qiitan test",
+						body: "posted by Qiitan",
+						tags: [{name: "PHP"}],
+						private: false
 					}
+
+					puts JSON.generate item
 					@qiitan_client = Qiitan::Client.new({url_name: 'u-akihiro', password: @password})
-					expect(@qiitan_client.post(item)).to be_instance_of Hash
+				  result = @qiitan_client.post(item)
+					puts result
+					expect(result).to be_instance_of Hash
 				end
 			end
 		end
