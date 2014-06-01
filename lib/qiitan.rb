@@ -6,102 +6,89 @@ require 'json'
 module Qiitan
 	API_BASE_URL = 'https://qiita.com/api/v1/'
 
-	class Rest
-		def initialize
-		end
-
-		def get(url, use_ssl, params = {})
-			##URLパラメータを追加する
-			#if !params.empty? then
-			#	url += '?'
-			#	url += params.map do |k, v|
-			#		"#{k}=#{CGI::escape(v.to_s)}"
-			#	end.join('&')
-			#end
-
-			url = assemble_params url, params
-
+	module HTTP
+		def self.request(url, http_method, use_ssl = false)
 			uri = URI.parse url
-			req = Net::HTTP::Get.new uri.request_uri
-			http = Net::HTTP.new uri.host, uri.port
-			http.use_ssl = use_ssl
-			res = http.request req
 
-			#JSONをRubyのハッシュ形式にして返してあげる
-			hashed = JSON.parse(res.body)
-		end
-
-		def post(url, use_ssl, form_data, params = {})
-			url = assemble_params url, params if !params.empty? 
-
-			uri = URI.parse url
-			req = Net::HTTP::Post.new uri.request_uri
-			#set_form_dataはバイナリファイルのアップロードは対応していないみたい
-			req.set_form_data form_data
-			http = Net::HTTP.new uri.host, uri.port
-			http.use_ssl = use_ssl
-			res = http.request req
-
-			hashed = JSON.parse res.body
-		end
-
-		def put
-		end
-
-		def delete
-		end
-
-		private
-			def assemble_params(url, params)
-				#URLパラメータを追加する
-				if !params.empty? then
-					url += '?'
-					url += params.map do |k, v|
-						"#{k}=#{CGI::escape(v.to_s)}"
-					end.join('&')
-				end			
-				url
+			case http_method
+			when :get then
+				req = Net::HTTP::Get.new uri.request_uri
+			when :post then
+				req = Net::HTTP::Post.new uri.request_uri
+			when :put then
+				req = Net::HTTP::Put.new uri.request_uri
+			when :delete then
+				req = Net::HTTP::Delete.new uri.request_uri
 			end
+
+			yield req if block_given?
+
+			http = Net::HTTP.new uri.host, uri.port
+			#http.set_debug_output($stderr)
+			http.use_ssl = use_ssl
+			res = http.request req
+		end
 	end
 
 	class Client
-		def initialize(options)
-			@rest = Qiitan::Rest.new
-			hashed = @rest.post API_BASE_URL + 'auth', true, options
+		attr_reader :token
+		def initialize(account)
+			url = "#{API_BASE_URL}auth"
+			res = Qiitan::HTTP.request(url, :post, true) do |req|
+				req.set_form_data account
+			end
+
+			hashed = JSON.parse res.body
+
 			raise 'auth error. check youre username and password' if hashed.key? 'error'
 			@token = hashed['token']
 		end
 
 		def rate_limit
-			url = API_BASE_URL + "rate_limit"
-			hashed = @rest.get(url, true, {'token' => @token})
-			hashed
+			url = "#{API_BASE_URL}rate_limit?token=#{@token}"
+			res = Qiitan::HTTP.request(url, :get, true)
+			JSON.parse res.body
 		end
 
 		def get_user_info
-			url = API_BASE_URL + 'user'
-			hashed = @rest.get(url, true, {'token' => @token })
+			url = "#{API_BASE_URL}user?token=#{@token}"
+			res = Qiitan::HTTP.request(url, :get, true)
+			JSON.parse res.body
 		end
 
 		def get_users_info(url_name)
-			url = API_BASE_URL + 'users/' + url_name
-			hashed = @rest.get(url, true, {'token' => @token})
+			url = "#{API_BASE_URL}users/#{url_name}?token=#{@token}"
+			res = Qiitan::HTTP.request(url, :get, true)
+			JSON.parse res.body
 		end
 
 		def posted_by(url_name)
-			url = API_BASE_URL + "users/#{url_name}/items"
-			hashed = @rest.get(url, true, {'token' => @token})
+			url = "#{API_BASE_URL}users/#{url_name}/items?token=#{@token}"
+			res = Qiitan::HTTP.request(url, :get, true)
+			JSON.parse res.body
 		end
 
 		def stocked_by(url_name)
-			url = API_BASE_URL + "users/#{url_name}/stocks"
-			hashed = @rest.get(url, true, {'token' => @token})
+			url = "#{API_BASE_URL}users/#{url_name}/items"
+			res = Qiitan::HTTP.request(url, :get, true)
+			JSON.parse res.body
 		end
 
-		def post(item)
-			item = JSON.generate(item)
-			url = API_BASE_URL + "items/"
-			hashed = @rest.post(url, true, item, {'token' => @token})
+		def post(payload)
+			url = "#{API_BASE_URL}items?token=#{@token}"
+			res = Qiitan::HTTP.request(url, :post, true) do |req|
+				req.content_type = "multipart/form-data"
+				#Content-Typeが指定されていないとJSONを受け取ってくれない
+				req['Content-Type'] = 'application/json'
+				req.body = payload
+			end
+
+			JSON.parse res.body
+		end
+
+		def delete(uuid)
+			url = "#{API_BASE_URL}items/#{uuid}?token=#{@token}"
+			res = Qiitan::HTTP.request(url, :delete, true)
 		end
 	end
 end
