@@ -54,5 +54,13 @@ describe Qiitan do
 				end
 			end
 		end
+
+		describe "#tags_list" do
+			context "正常に完了" do
+				it "タグの一覧を配列で返す" do
+					expect(@client.tags_list).to be_an_instance_of Array
+				end
+			end
+		end
 	end
 end

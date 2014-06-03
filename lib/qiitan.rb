@@ -4,6 +4,7 @@ require 'uri'
 require 'json'
 require 'qiitan/api/users'
 require 'qiitan/api/items'
+require 'qiitan/api/tags'
 
 module Qiitan
 	API_BASE_URL = 'https://qiita.com/api/v1/'
@@ -36,6 +37,7 @@ module Qiitan
 	class Client
 		include Qiitan::API::Users
 		include Qiitan::API::Items
+		include Qiitan::API::Tags
 		attr_reader :token
 
 		def initialize(account)
