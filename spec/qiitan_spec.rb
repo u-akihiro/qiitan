@@ -62,5 +62,13 @@ describe Qiitan do
 				end
 			end
 		end
+
+		describe "#get_newly_post" do
+			context "正常に取得した場合" do
+				it "最新の投稿を配列で返す" do
+					expect(@client.get_newly_post).to be_an_instance_of Array
+				end
+			end
+		end
 	end
 end

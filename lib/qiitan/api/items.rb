@@ -15,6 +15,13 @@ module Qiitan
 				url = "#{API_BASE_URL}items/#{uuid}?token=#{@token}"
 				res = Qiitan::HTTP.request(url, :delete, true)
 			end
+
+			def get_newly_post
+				url = "#{API_BASE_URL}items?token=#{@token}"
+				res = Qiitan::HTTP.request(url, :get, true)
+
+				JSON.parse res.body
+			end
 		end
 	end
 end
