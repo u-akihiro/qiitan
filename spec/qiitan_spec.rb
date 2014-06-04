@@ -70,5 +70,13 @@ describe Qiitan do
 				end
 			end
 		end
+
+		describe "#stocked" do
+			context "正常に取得出来た場合" do
+				it "ストックした投稿を配列で返す" do
+					expect(@client.stocked).to be_an_instance_of Array
+				end
+			end
+		end
 	end
 end

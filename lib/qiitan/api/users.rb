@@ -25,6 +25,12 @@ module Qiitan
 				res = Qiitan::HTTP.request(url, :get, true)
 				JSON.parse res.body
 			end
+
+			def stocked
+				url = "#{API_BASE_URL}stocks?token=#{@token}"
+				res = Qiitan::HTTP.request(url, :get, true)
+				JSON.parse res.body
+			end
 		end
 	end
 end

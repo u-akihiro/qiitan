@@ -30,6 +30,14 @@ module Qiitan
 			#http.set_debug_output($stderr)
 			http.use_ssl = use_ssl
 			res = http.request req
+
+			#2xx系のコードか否かを判定
+			#レスポンスの内容チェックは行わない
+			if res.kind_of? Net::HTTPSuccess then
+				res
+			else
+				raise 'HTTP Request Failed.'
+			end
 		end
 	end
 
