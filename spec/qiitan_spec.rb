@@ -5,7 +5,7 @@ describe Qiitan do
 		describe "new" do
 			context "トークンの取得に成功すると" do
 				it 'clientインスタンスが生成される' do
-					client = Qiitan::Client.new({url_name:'u-akihiro', password: 'atraptilandroin'})
+					client = Qiitan::Client.new({url_name:'foo', password: 'atraptilandroin'})
 					expect(client).to be_an_instance_of Qiitan::Client
 				end
 			end
@@ -13,14 +13,14 @@ describe Qiitan do
 			context "トークンの取得に失敗すると" do
 				it '例外が投げられる' do
 					expect do
-						client = Qiitan::Client.new({url_name:'u-akihiro', password: ''})
+						client = Qiitan::Client.new({url_name:'foo', password: ''})
 					end.to raise_error(RuntimeError)
 				end
 			end
 		end
 
 		before do
-			@client = Qiitan::Client.new({url_name:'u-akihiro', password: 'atraptilandroin'})
+			@client = Qiitan::Client.new({url_name:'foo', password: 'atraptilandroin'})
 		end
 
 		describe "#rate_limit" do
