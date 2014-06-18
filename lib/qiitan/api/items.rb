@@ -1,6 +1,10 @@
 module Qiitan
 	module API
 		module Items
+=begin
+==== Args
+Hash
+=end
 			def post(payload)
 				url = "#{API_BASE_URL}items?token=#{@token}"
 				res = Qiitan::HTTP.request(url, :post, true) do |req|

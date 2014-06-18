@@ -48,6 +48,12 @@ module Qiitan
 		include Qiitan::API::Tags
 		attr_reader :token
 
+=begin rdoc
+==== Args
+url_name passwordをキーにしたハッシュを指定する
+==== Raise
+RuntimeError
+=end
 		def initialize(account)
 			url = "#{API_BASE_URL}auth"
 			res = Qiitan::HTTP.request(url, :post, true) do |req|
@@ -60,6 +66,9 @@ module Qiitan
 			@token = hashed['token']
 		end
 
+=begin
+このメソッドを実行することで、APIの残りリクエスト数を取得することが出来る
+=end
 		def rate_limit
 			url = "#{API_BASE_URL}rate_limit?token=#{@token}"
 			res = Qiitan::HTTP.request(url, :get, true)
