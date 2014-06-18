@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "qiitan"
   spec.version       = Qiitan::VERSION
   spec.authors       = ["akihiro"]
-  spec.email         = ["akihiro.uesaka@gmail.com"]
+  spec.email         = ["cp2xlrun@gmail.com"]
   spec.summary       = %q{qiita api wrapper}
   spec.description   = %q{simple wrapper library for qiita api}
   spec.homepage      = ""
